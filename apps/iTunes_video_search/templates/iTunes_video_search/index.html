@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <title>Document</title>
+    <script>
+        $(document).ready(function(){
+            $('form').submit(function(){
+                $('#video').html("<img src='../../static/iTunes_video_search/loading_apple.gif' alt='loading animation'>")
+                $.post(
+                    $(this).attr('action'),
+                    $(this).serialize(),
+                    function(res){
+                        var html_string = "";
+                        if(res.results.length !== 0){
+                            html_string = "<video controls src='" + res.results[0].previewUrl + "'></video>";
+                        }else{
+                            html_string = "Not Found";
+                        }
+                        $('#video').html(html_string);
+                    },
+                    'json'
+                );
+                return false;
+            });
+        });
+    </script>
+</head>
+<body>
+    <form action="/main/get_movie" method="post">
+        {% csrf_token %}
+        <label for="user_input">Enter Artist's Name:</label>
+        <input id="user_input" name="user_input" type="search">
+        <input type="submit" value="search">
+    </form>
+    <div id="video"></div>
+</body>
+</html>
